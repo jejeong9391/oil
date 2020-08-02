@@ -12,7 +12,6 @@ if($st_idx>0){ //지점로그인인 경우, 해당지점만 출력
 	$addWhere = " AND st.u_idx='$st_idx'";
 }else{ //기사인 경우, 소속 지점 출력 
 	$addWhere = " AND st.rider_idx='$ri_idx' ";
-	
 }
 
 // 조건은 $sql이 아닌 addwhere로 지정 
@@ -23,7 +22,6 @@ if($st_idx>0){ //지점로그인인 경우, 해당지점만 출력
 
 	switch ($method) {  
 	  case 'GET': 
-	
 		$sql="SELECT comm.u_idx, comm.u_name, comm.u_type, comm.is_use, st.head_idx ,st.tel FROM user_common AS comm 
 			INNER JOIN user_store AS st ON st.u_idx=comm.u_idx 
 			WHERE comm.u_type='4' AND comm.is_use='0'".$addWhere.($key?" AND st.head_idx=$key":'');
