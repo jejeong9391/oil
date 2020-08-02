@@ -23,14 +23,14 @@ if($io_status){
 	switch ($method) {  
 	  case 'GET': 
 		//io는 예약어임 
-		$sql="SELECT io_idx,io_date,order_date,store_idx,io_amt,io_status,inouts.rider_idx,comm.u_name,st.tel, inouts.remark AS io_remark,inouts.reg_date AS io_reg,inouts.last_update AS io_last 
+		$sql="SELECT io_idx,io_date,order_date,store_idx,io_amt,io_status,inouts.rider_idx, IFNULL(comm.u_name,'매장정보없음')AS u_name ,st.tel, inouts.remark AS io_remark,inouts.reg_date AS io_reg,inouts.last_update AS io_last 
 			FROM inouts AS inouts
-			INNER JOIN user_store AS st ON inouts.store_idx = st.u_idx 
-			INNER JOIN user_common AS comm ON inouts.store_idx = comm.u_idx
+			LEFT OUTER JOIN user_store AS st ON inouts.store_idx = st.u_idx 
+			LEFT OUTER JOIN user_common AS comm ON inouts.store_idx = comm.u_idx
 			WHERE inouts.rider_idx ='$rider_idx' AND inouts.io_status='$io_status' AND io_date BETWEEN '$sdate' AND '$edate' ".$addWhere."
 			ORDER BY io_date asc, io_idx desc;";
 
-$sql;
+//$sql;
 		//$cnt_sql ="select count(*)AS cnt";
 		break;
 	  
