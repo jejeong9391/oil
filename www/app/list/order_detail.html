@@ -586,7 +586,7 @@
                             $(".ordMemo").val(item.remark); // 매장 전화번호
                             if (item.io_idx) $("input[name='io_status']").val(item.io_status); // 전표있는경우, 배송여부 
 
-                            if (item.visit_day != '') { //입고요일 구하기
+                            if (item.visit_day != null) { //입고요일 구하기 // 입고요일 미정이면 9|9|9으로 저장됨. null== 매장정보 없는 경우 
                                 //입고요일배열
                                 var Arr = item.visit_day.split('|'); // |0|9|2|9|...이렇게 시작해서 split한 Arr[0]은 빈값임.
                                 Arr.shift(); //Arr[0] 요소는 빈값이므로 제거 
@@ -633,7 +633,14 @@
                                         $("#io_date").val(makeDate(date));
                                     }
                                 }
-                            }
+                            }else{ // 전표정보있는데 매장정보가 없는 경우 item.visit_day != null임 
+								//입고일자는 입력
+								 $("#before_ioDate").val(item.io_date); //기존 입고일자 저장 
+                                 $("#io_date").val(item.io_date); //입고일자
+							
+							}
+
+
                             if (item.io_status == '1') { //배송완료 
                                 $("#chkDeli").addClass('clickDeli');
                                 $("#chkIcon").show();

@@ -30,12 +30,13 @@ switch ($method) {
 					INNER JOIN inouts AS ios ON iop.io_idx= ios.io_idx
 					INNER JOIN user_store AS st ON st.u_idx=ios.store_idx
 					INNER JOIN product AS pro ON iop.p_idx = pro.p_idx
-				WHERE iop.io_idx =$key";*/ 
-
+				WHERE iop.io_idx =$key";*/
+				
+// 2020-07-31 매장정보 지운경우 전표 상세 자체가 안나오는 오류 // INNER JOIN user_store ->LEFT OUTER 으로 변경  
 		$sql = "SELECT iop.io_idx,iop_idx,ios.io_status,iop.io_type,ios.io_date,st.visit_day,st.tel,iop.p_idx,pro.p_idx AS 
 					p_num,pro.p_name,pro.p_stand,iop.amount,iop.amt_price,iop.amt_total,ios.remark,(SELECT cfg_value FROM co_config WHERE cfg_type='deadline_rider')AS cfg_value 
 				FROM inouts AS ios
-					INNER JOIN user_store AS st ON st.u_idx=ios.store_idx
+					LEFT OUTER JOIN user_store AS st ON st.u_idx=ios.store_idx
 					LEFT OUTER JOIN inout_product AS iop ON ios.io_idx= iop.io_idx and ios.center_idx = iop.center_idx
 					LEFT OUTER JOIN product AS pro ON iop.p_idx = pro.p_idx
 				WHERE ios.center_idx = $center_idx AND ios.io_idx =$key";
