@@ -76,7 +76,8 @@
                     <span>기간&nbsp; : &nbsp;</span>
                     <input type="text" id="sdate" name="sdate" readonly>&nbsp;&nbsp;&nbsp;~&nbsp;&nbsp;&nbsp;
                     <input type="text" id="edate" name="edate" readonly style="background: #f4f4f400"></div>
-                <div class="boxWrap">
+                <div class="boxWrap" style="height: 100%;">
+                    <!--boxWrap 클래스명 다른곳에서 사용중임-->
                     <select id="selBox">
                         <option selected>프랜차이즈 선택</option>
                         <option>OO통닭</option>
@@ -404,7 +405,7 @@
                         var io_idx = $(this).parents('li').children('#io_idx').val();
                         var st_idx = $(this).parents('li').children('#store_idx').val();
                         var st_name = $(this).parents('li').find('.storeTitle span').text().substr(
-                        6); //입고날짜 제거 
+                            6); //입고날짜 제거 
                         //alert(st_name);
                         //console.log(io_idx+'||'+st_idx);
                         location.href = 'order_detail.html?st_idx=' + st_idx + '&io_idx=' + io_idx +
@@ -435,7 +436,8 @@
                 currentText: "오늘",
                 monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
                 monthNamesShort: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월",
-                    "12월"],
+                    "12월"
+                ],
                 dayNames: ["일", "월", "화", "수", "목", "금", "토"],
                 dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
                 dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"],
