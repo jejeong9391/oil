@@ -698,7 +698,7 @@ body {
 
 }
 
-.setImgDiv > li:nth-child(1) > .liRight {
+.setImgDiv>li:nth-child(1)>.liRight {
     border: 0;
 }
 
@@ -722,7 +722,7 @@ body {
 }
 
 
-#setList > li:nth-child(1) > .liRight {
+#setList>li:nth-child(1)>.liRight {
     /*첫번째 li만 위의 border 없애기*/
     border: 0;
 }
@@ -1134,7 +1134,7 @@ body {
     height: 50px;
     border-radius: 10px;
     /*  background: #f2f2f2;*/
-   margin: 10px 5px;
+    margin: 10px 5px;
     /*    background: gold;*/
 }
 
@@ -1498,4 +1498,148 @@ body {
     padding: 10px;
     /* margin: 10px; */
     border: 0;
+}
+
+/* 매출현황 레포트 css */
+.searchBox {
+    width: 95%;
+    /*    height: 255px;
+    background: #ffffff2b;*/
+    border-radius: 5px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+#selBox {
+    width: 100%;
+    height: 40px;
+    margin: 0 auto;
+    display: block;
+    border-radius: 5px;
+    border: 0.5px solid #fffefe52;
+    background: #0000004f;
+    color: #fff;
+    /*    padding-bottom: 10px;*/
+    margin-top: 10px;
+}
+
+.inner {
+    width: 100%;
+    height: 50%;
+    /*    border: 1px solid black;*/
+    border-radius: 5px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+.topLeft {
+    width: 65%;
+    height: 100%;
+    /*    border: 1px solid black;*/
+    border-radius: 15px;
+    float: left;
+    box-sizing: border-box;
+}
+
+.topRight {
+    width: 30%;
+    height: 100%;
+    /*    border: 1px solid black;*/
+    border-radius: 15px;
+    float: left;
+    box-sizing: border-box;
+
+}
+
+.topRight>div {
+    height: 50%;
+
+}
+
+.topRight div>p,
+.total_price div>p {
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+    padding: 2 5px;
+    line-height: 25px;
+    margin: 0 auto;
+}
+
+.franLogo {
+    width: 30%;
+    height: 100%;
+
+    border-radius: 15px;
+    float: left;
+    box-sizing: border-box;
+}
+
+.franImg {
+    display: block;
+    width: 100%;
+    height: 95%;
+    display: block;
+    margin: 0 auto;
+    float: left;
+    border-radius: 15px;
+}
+
+.franTitle {
+    width: 60%;
+    height: 100%;
+    float: left;
+    /*    text-align: center;*/
+    margin: 0 auto;
+    line-height: 60px;
+    font-size: 16px;
+    padding: 0 5px;
+    box-sizing: border-box;
+}
+
+.total_price {
+    width: 40%;
+    height: 100%;
+    /*    border: 1px solid black;*/
+    border-radius: 15px;
+    float: left;
+    box-sizing: border-box;
+}
+
+.noti {
+    width: 100%;
+    padding: 10px 15px 0 15px;
+    font-size: 12px;
+}
+
+.storeBox {
+    width: 95%;
+    /*    height: 255px;
+    background: #ffffff2b;*/
+    border-radius: 5px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.innerBottom {
+    width: 100%;
+    height: 60%;
+    border-radius: 5px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+li>.innerBottom div>p {
+    font-size: 15px;
+    font-weight: 300;
+    text-align: center;
+    padding: 2 5px;
+    line-height: 15px;
+    margin: 0 auto;
+}
+
+.topLeft>p {
+    font-size: 17px;
+    padding: 5px 15px;
+    font-weight: 600;
 }
