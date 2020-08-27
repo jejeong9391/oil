@@ -256,7 +256,23 @@
             getOrdList(io_idx, st_idx);
 
             // $('.cntInput').attr('readOnly', true);
-
+   //2020-08-27 지점인 경우 입고관련 전체 클릭불가 //수정중 
+           //  if (localStorage.getItem('store_idx') > 0) {
+                  $(document).on("click", ".outWrap", function() {
+                    //  alert('d');
+                    $(".outWrap").css('pointer-event','none');
+                  })
+           //  }
+            $('.outWrap').click(function(e) { 
+                if(!$(e.target).hasClass("cntBtn")) {  
+                     $(this).css('pointer-event','none');
+                      $(this).off('click');
+                    event.stopPropagation();
+                  event.preventDefault(); } 
+            
+            });
+//////////////////////////////////////////////////////////////
+            
 
             //통화기능 
             $(".btnMenu").on('click', function() {
@@ -335,6 +351,10 @@
                 }
 
             });
+            
+         
+            
+            
             //배송메모 클릭 시, 화면 하단으로 스크롤 이동 
             $(".ordMemo").on("click", function() {
                 $('html').animate({
@@ -362,6 +382,7 @@
                     }
                 }
             });
+            
 
 			//저장 
             $("#saveBtn").on("click", function() {
