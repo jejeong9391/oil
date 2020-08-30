@@ -258,25 +258,6 @@
         $(function() {
             getOrdList(io_idx, st_idx);
 
-            // $('.cntInput').attr('readOnly', true);
-   //2020-08-27 지점인 경우 입고관련 전체 클릭불가 //수정중 
-           //  if (localStorage.getItem('store_idx') > 0) {
-                  $(document).on("click", ".outWrap", function() {
-                    //  alert('d');
-                    $(".outWrap").css('pointer-event','none');
-                  })
-           //  }
-            $('.outWrap').click(function(e) { 
-                if(!$(e.target).hasClass("cntBtn")) {  
-                     $(this).css('pointer-event','none');
-                      $(this).off('click');
-                    event.stopPropagation();
-                  event.preventDefault(); } 
-            
-            });
-//////////////////////////////////////////////////////////////
-            
-
             //통화기능 
             $(".btnMenu").on('click', function() {
                 if ($(".tel").val() != '') {
@@ -341,8 +322,40 @@
                 }
 
             });
+            /* 2020-08-31 수량 클릭시 클립보드 해결후 주석풀 것 // 각 태그에 readonly도 제거 
+            //수량 input 선택 시, 선택처리
+            $(document).on("click", ".cntInput", function() {
+                $(this).select();
+              });
 
+			  $(document).on("dbclick", ".cntInput", function() {
+              // alert('ss');
+              });
+			
+			//수량 미입력 시 alert
+			 $(document).on("blur", ".cntInput", function() {
+                if($(this).val()==''){
+					alertBoxFocus('수량을 입력해주세요',$(this));
+					}
+              });
 
+            
+            //수량 변경 시, amt저장 및 재계산 
+            $(document).on("keyup", ".cntInput", function() {
+              
+                var this_li = $(this).parents('li').attr('id');
+                var chg_amt = $(this).val();
+				
+               //   alert(chg_amt);
+                 if (this_li < 90) {
+                    $("#" + this_li).find('input[name="out_amt[]"]').val(chg_amt); // 출고
+                } else {
+                     $("#" + this_li).find('input[name="in_amt[]"]').val(chg_amt); //입고
+                }
+                  getTotal(); //합계재계산 
+                
+              });
+            */
             //수량조절 
             $(document).on("click", ".cntBtn", function() {
                 // $(".outProduct").on('click', function() {
@@ -757,7 +770,7 @@
                             html += '    <div class="opRight">';
                             html += '       <div class="cntWrap">';
                             html += '           <div id="del" class="cntBtn minus">-</div>';
-                            html += '           <input type="text" class="cntInput" value="' + item.amount + '" readonly>';
+                            html += '           <input type="number" class="cntInput" value="' + item.amount + '"  readonly>';
                             html += '           <div id="add" class="cntBtn plus ">+</div>';
                             html += '       </div>';
                             html += '     </div>';
@@ -911,7 +924,7 @@
                         html += '    <div class="opRight">';
                         html += '       <div class="cntWrap">';
                         html += '           <div id="del" class="cntBtn minus">-</div>';
-                        html += '           <input type="text" class="cntInput" value="1" readonly>';
+                        html += '           <input type="number" class="cntInput" value="1" readonly >';
                         html += '           <div id="add" class="cntBtn plus ">+</div>';
                         html += '       </div>';
                         html += '     </div>';

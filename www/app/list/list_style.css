@@ -1216,12 +1216,13 @@ body {
 
 .minus {
     /* background: #fff; */
-    font-size: 30px;
+    font-size: 25px;  /*30px;*/
     border: 0;
+	width:33%;
 }
 
 .cntInput {
-    width: 40%;
+    width:35%;  /*40%;*/
     height: 30px;
     border: 1px solid #6d6d6d;
     text-align: center;
@@ -1231,12 +1232,14 @@ body {
     line-height: 30px;
     background: transparent;
     padding-top: 3px;
+
 }
 
 .plus {
     /* background: #fff; */
     font-size: 25px;
     border: 0;
+	    width: 32%;
 }
 
 
@@ -1655,3 +1658,4 @@ li>.innerBottom div>p {
     box-sizing: border-box;
     display: none;
 }
+ 

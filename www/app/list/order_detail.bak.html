@@ -52,10 +52,17 @@
             <!--배달완료 여부 (기본값 = 주문접수 = 0 )-->
             <input type="hidden" name="io_status" value="0">
             <input type="hidden" name="store_idx">
+            <input type="hidden" name="deli_deadDate" class="deli_deadDate">
+
+            <!--기존입고일자-->
+
+            <!--배송기사 마감값 -->
             <!--    <input type="hidden" name="del_idx[]" value="">-->
 
             <div class="indate dateWrap">
                 <span>입고일자 :&nbsp;&nbsp;</span>
+                <input type="hidden" name="before_ioDate" id="before_ioDate" val="">
+                <!--기존입고일자-->
                 <input type="text" id="io_date" name="io_date" class="io_date" readonly>
                 <!-- <div class="dayWrap">
                     <div class="eachDay">일</div>
@@ -101,6 +108,31 @@
                         <input type="hidden" class="outCnt" value="0">
                         <!--   <li class="outProduct"></li>-->
                         <!--반복시작-->
+                        <li id="2222" class="outProduct">
+                            <!-- <div class="opWrap" style="    margin: 10px 1px;">
+                                  <div class="delBtnWrap" >
+                                    <i class="far fa-trash-alt" style="margin: 0 auto; font-size: 20px; color: rgb(241, 121, 126);"></i>
+                                </div>
+                                <div class="opLeft" style="padding-left:10px;    width: 68%; ">
+                                    <div class="opTitle"><span>두마리무쇠치킨 크리스피</span></div>
+                                    <div class="opTitle priceTxt">
+                                        <input type="hidden" name="amt_price[]" value="' + proPrice + '">
+                                        <input type="hidden" name="out_amt[]" value="' + item.amount + '">
+                                        <input type="hidden" name="out_total[]" value="' + parseInt(proPrice) + '">
+                                        <input type="hidden" name="in_amt[]" value="0">
+                                        <input type="hidden" name="in_total[]" value="0">
+                                        <p>50,000</p>
+                                    </div>
+                                </div>
+                                <div class="opRight">
+                                    <div class="cntWrap">
+                                        <div id="del" class="cntBtn minus">-</div>
+                                        <input type="text" class="cntInput" value="3" readonly>
+                                        <div id="add" class="cntBtn plus ">+</div>
+                                    </div>
+                                </div>
+                            </div>-->
+                        </li>
                         <!--반복끝-->
                     </ul>
                     <div id="outTotal" class="totalWrap">
@@ -114,7 +146,9 @@
                 <!-- .outWrap -->
 
                 <!--입고상품-->
+               
                 <div class="outWrap">
+                    <div class="topLayer" ></div>
                     <div class="outHdWrap">
                         <div class="inHd">
                             <span>입고상품</span>
@@ -214,7 +248,8 @@
             $("#del_io span").text("");
             $(".textLogo a").text(st_name); //헤더에 지점명 삽입
         }
-        if (localStorage.getItem('store_idx') > 0) {
+        if (localStorage.getItem('store_idx') > 0) { //지점 로그인한 경우
+            $(".topLayer").css("display", "block");
             $("#delMemo").css("display", "none");
             $(".blank").css("display", "block");
 
@@ -224,6 +259,23 @@
             getOrdList(io_idx, st_idx);
 
             // $('.cntInput').attr('readOnly', true);
+   //2020-08-27 지점인 경우 입고관련 전체 클릭불가 //수정중 
+           //  if (localStorage.getItem('store_idx') > 0) {
+                  $(document).on("click", ".outWrap", function() {
+                    //  alert('d');
+                    $(".outWrap").css('pointer-event','none');
+                  })
+           //  }
+            $('.outWrap').click(function(e) { 
+                if(!$(e.target).hasClass("cntBtn")) {  
+                     $(this).css('pointer-event','none');
+                      $(this).off('click');
+                    event.stopPropagation();
+                  event.preventDefault(); } 
+            
+            });
+//////////////////////////////////////////////////////////////
+            
 
             //통화기능 
             $(".btnMenu").on('click', function() {
@@ -241,16 +293,17 @@
                 //지점은 배송변경할 수 없음.
 
                 if (io_idx) {
-                    //삭제기능 
                     confirmBox('삭제된 주문정보는 복구할수 없습니다. \n\n정말 삭제하시겠습니까?', delIos, io_idx);
-                    //return confirm('삭제된 주문정보는 복구할수 없습니다. \n정말 삭제하시겠습니까?') ? insertOrder("DELETE", io_idx) : void(0);
-
+                    //삭제
                     function delIos(io_idx) {
-                        insertOrder("DELETE", io_idx);
+                        var chk_result = chk_deadline($("#before_ioDate").val()); //마감확인
+                        if (chk_result == true) {
+                            insertOrder("DELETE", io_idx);
+                        } else {
+                            alertBox("마감완료된 전표는 삭제할 수 없습니다.");
+                        }
                     }
                 }
-
-
             });
 
             //상품추가
@@ -268,7 +321,7 @@
             });*/
 
             //상품삭제 처리 //동적으로 생긴 ui 일경우 document사용해야함. 
-            $(document).on("click", ".delBtn", function() {
+            $(document).on("click", ".delBtnWrap", function() {
                 //$(".delBtn").on('click', function() { 작동X
 
                 var thisId = $(this).attr("id");
@@ -301,6 +354,10 @@
                 }
 
             });
+            
+         
+            
+            
             //배송메모 클릭 시, 화면 하단으로 스크롤 이동 
             $(".ordMemo").on("click", function() {
                 $('html').animate({
@@ -328,40 +385,104 @@
                     }
                 }
             });
+            
 
-            //저장 
+			//저장 
             $("#saveBtn").on("click", function() {
+
                 $(this).css("background", "#efefef");
                 if (chkSave == '1') { //저장버튼 이미 클릭했을경우 중복저장 방지
                     e.stopPropagation();
                     e.preventDefault();
                 } else {
                     //지점일경우 , 당일 저장이 안되도록 해야함. 
-                    if(localStorage.getItem('store_idx')>0){
+                    if (localStorage.getItem('store_idx') > 0) {
 
-                        if($("#io_date").val()<=today){
+                        if ($("#io_date").val() <= today) {
                             alertBox("익일 이전 날짜로는 저장할 수 없습니다.");
-                            
+
                             //저장버튼 활성화
-                            chkSave=0;
-                            $(this).css("background", "rgb(241, 121, 126)"); 
+                            chkSave = 0;
+                            $(this).css("background", "rgb(241, 121, 126)");
                             return false;
-                       }
-                       
-                       }
-                    
-                    if (io_idx) { //수정
-                        insertOrder("PUT", io_idx);
-                    } else { // insert
-                        //console.log($("input[name='out_total[]']").val());
-                        insertOrder("POST", '');
+                        }
+
+						if($('input[name="io_status"]').val() == '1'){
+							alertBox("배송완료처리된 전표는 수정할 수 없습니다.");
+							return false;
+						}
+
+                    }else {//2020-05-11 기사 마감
+                        var io_date = $("#io_date").val(); //입고일자 
+                        var before_ioDate = $("#before_ioDate").val(); //수정전, 기존입고일자
+
+                        var chk_result = chk_deadline(io_date);
+                        if (chk_result == true) {
+                            //저장처리   
+                            if (before_ioDate != '') {
+                                if (before_ioDate == io_date) {} else {
+                                    chk_result = chk_deadline(before_ioDate); //기존입고일자로 수정가능여부 확인 
+                                    if (chk_result == false) {
+                                        alertBox('마감 완료된 전표는 수정할 수 없습니다.');
+										chkSave = 1;
+                                        return false;
+                                    }
+                                }
+                            }
+
+                        } else {
+                            alertBox('입고일자를 마감일 이전으로 등록/수정 할 수 없습니다. 관리자에게 문의하세요.');
+							chkSave = 1;
+                            return false;
+                        }
                     }
+                     //저장처리 
+                        if (io_idx) { //수정
+                            insertOrder("PUT", io_idx);
+                        } else { // insert
+                            //console.log($("input[name='out_total[]']").val());
+                            insertOrder("POST", '');
+                        }
                 }
+            }); /*save 끝*/
 
-            });
 
-        });
+        }); /*$(function()끝*/
+        function chk_deadline(io_date) {
 
+            var deli_deadDate = $(".deli_deadDate").val(); //기사 마감설정값 
+            // var deli_deadDate = '5';
+
+
+            //1. 입고일자 날짜형태로 변경 
+            var io_dateArr = io_date.split('-');
+            var yy = io_dateArr[0];
+            var mm = Number(io_dateArr[1]) - 1; //날짜 변환시 +1로 변환하므로 -해줘야함 
+            var dd = io_dateArr[2];
+
+            var cmpr_ioDate = new Date(yy, mm, dd); //입고일변환
+            var endMonth = new Date(yy, mm + 1, 0); //입고일자의 월말 
+            var d = new Date();
+            //    console.log(endMonth + "===== 입고일 기준 마감일과 오늘을 비교 ==========" + cmpr_ioDate);
+
+            /* 마감날짜 구하기
+            해당월의 마지막 날을 계산후 값만큼 Addday처리함
+            30일만 따로 처리 -마지막일자에서 한달 더하고 하루를 빼*/
+
+            if (deli_deadDate == '30') { //다음달 말일구하기 
+                endMonth.setMonth(endMonth.getMonth() + 2).setDate(0);
+                //날짜객체에서 1월==0임 따라서 해당 달을 구하려면 +1해야함. 다음달이니 +2
+
+            } else {
+                endMonth.setDate(endMonth.getDate() + Number(deli_deadDate));
+            }
+
+            if (endMonth < d) { //정산일 5/5 < 현재 5/25  --- 수정불가 
+                console.log("입고일 : " + cmpr_ioDate + "  || 마감일 : " + endMonth + "  ||  오늘 : " + d);
+                return false;
+            }
+            return true;
+        }
 
 
         function sel(liIdx, type, pro) { // type: 덧/뺄 pro: 입출고
@@ -477,68 +598,79 @@
                     //rest로 받아온 리뷰데이터를 forEach문으로 리뷰ul에 추가하기
                     var headList = resp.data.data;
                     // alert(resp.data.data.io_status);
+                    var isFirst = false;
+
                     headList.forEach(function(item) {
                         var html = "";
-                        $(".tel").val(item.tel); // 매장 전화번호
-                        $(".ordMemo").val(item.remark); // 매장 전화번호
-                        if (item.io_idx) $("input[name='io_status']").val(item.io_status); // 전표있는경우, 배송여부 
+                        if (!isFirst) { //inout 정보는 한번만 뿌리도록 구분값 //전역에 false하고 foreach한번돌고나면 true니까 반복하지않음.
+                            isFirst = true;
 
-                        if (item.visit_day != '') { //입고요일 구하기
-                            //입고요일배열
-                            var Arr = item.visit_day.split('|'); // |0|9|2|9|...이렇게 시작해서 split한 Arr[0]은 빈값임.
-                            Arr.shift(); //Arr[0] 요소는 빈값이므로 제거 
-                            var dayArr = []; // 한글 요일 배열 
+                            $(".deli_deadDate").val(item.cfg_value); // 기사 마감설정값 (5,7...)
+                            $(".tel").val(item.tel); // 매장 전화번호
+                            $(".ordMemo").val(item.remark); // 매장 전화번호
+                            if (item.io_idx) $("input[name='io_status']").val(item.io_status); // 전표있는경우, 배송여부 
 
-                            //특정 날짜의 요일 구하기 
-                            Arr.forEach(function(d) {
-                                if (d < 9) {
-                                    //입고요일 출력 
-                                    var week = new Array(' 일', ' 월', ' 화', ' 수', ' 목', ' 금', ' 토');
-                                    var todayLabel = week[d];
-                                    dayArr.push(todayLabel);
-                                };
-                            });
+                            if (item.visit_day != null) { //입고요일 구하기 // 입고요일 미정이면 9|9|9으로 저장됨. null== 매장정보 없는 경우 
+                                //입고요일배열
+                                var Arr = item.visit_day.split('|'); // |0|9|2|9|...이렇게 시작해서 split한 Arr[0]은 빈값임.
+                                Arr.shift(); //Arr[0] 요소는 빈값이므로 제거 
+                                var dayArr = []; // 한글 요일 배열 
 
-                            $("#ioDays").text(dayArr); //입고요일 입력
+                                //특정 날짜의 요일 구하기 
+                                Arr.forEach(function(d) {
+                                    if (d < 9) {
+                                        //입고요일 출력 
+                                        var week = new Array(' 일', ' 월', ' 화', ' 수', ' 목', ' 금', ' 토');
+                                        var todayLabel = week[d];
+                                        dayArr.push(todayLabel);
+                                    };
+                                });
 
-                            //입고일자 입력 
-                            if (item.io_date) {
-                                $("#io_date").val(item.io_date); //입고일자
+                                $("#ioDays").text(dayArr); //입고요일 입력
 
-                            } else { //저장된 입고일자 없을 때 
+                                //입고일자 입력 
+                                if (item.io_date) {
+                                    $("#before_ioDate").val(item.io_date); //기존 입고일자 저장 
+                                    $("#io_date").val(item.io_date); //입고일자
 
-                                if (dayArr.length > 0) { //설정한 요일이 있으면 입고 요일에 맞는 날짜 찾기 
+                                } else { //저장된 입고일자 없을 때 
 
-                                    //******* indexof는 배열에서 다르게 작동한다 . 문자열일때 아래처럼 작동함 !!!!!
-                                    var roop = 0; // while 무한루프 방지 
-                                    while (item.visit_day.indexOf(gDay) < 0) { //|9|1|2|9|9|9|9 전체에서 오늘 요일(2)가있는지 확인 // 일치값이 없으면 -1리턴     //위 조건이 배열일때에는 indexOf 작동안함
-                                        //일치값이 없으면 날짜 하루씩 더해서 요일 구하고 다시 while 조건으로 이동
-                                        date.setDate(date.getDate() + 1); //날짜 하루 더하기
-                                        gDay = date.getDay(); //요일 구하기 
+                                    if (dayArr.length > 0) { //설정한 요일이 있으면 입고 요일에 맞는 날짜 찾기 
 
-                                        //확인코드 및 무한루프 방지 
-                                        console.log("배열 요일 : " + gDay + "|| 더한 요일 : " + date);
-                                        if (roop < 30) roop++;
-                                        else break; // while 지옥에서 벗어나는방법 
+                                        //******* indexof는 배열에서 다르게 작동한다 . 문자열일때 아래처럼 작동함 !!!!!
+                                        var roop = 0; // while 무한루프 방지 
+                                        while (item.visit_day.indexOf(gDay) < 0) { //|9|1|2|9|9|9|9 전체에서 오늘 요일(2)가있는지 확인 // 일치값이 없으면 -1리턴     //위 조건이 배열일때에는 indexOf 작동안함
+                                            //일치값이 없으면 날짜 하루씩 더해서 요일 구하고 다시 while 조건으로 이동
+                                            date.setDate(date.getDate() + 1); //날짜 하루 더하기
+                                            gDay = date.getDay(); //요일 구하기 
 
-                                    } //일치값이 있으면 setDate한 값으로 입고일자 만들기 
-                                    var thiio_date = makeDate(date);
-                                    $("#io_date").val(thiio_date);
+                                            //확인코드 및 무한루프 방지 
+                                            console.log("배열 요일 : " + gDay + "|| 더한 요일 : " + date);
+                                            if (roop < 30) roop++;
+                                            else break; // while 지옥에서 벗어나는방법 
 
-                                } else { // 설정한 요일이 없으면 오늘날짜 리턴 |9|9|9|9|9|9|9
-                                    $("#io_date").val(makeDate(date));
+                                        } //일치값이 있으면 setDate한 값으로 입고일자 만들기 
+                                        var thiio_date = makeDate(date);
+                                        $("#io_date").val(thiio_date);
+
+                                    } else { // 설정한 요일이 없으면 오늘날짜 리턴 |9|9|9|9|9|9|9
+                                        $("#io_date").val(makeDate(date));
+                                    }
                                 }
+                            }else{ // 전표정보있는데 매장정보가 없는 경우 item.visit_day != null임 
+								//입고일자는 입력
+								 $("#before_ioDate").val(item.io_date); //기존 입고일자 저장 
+                                 $("#io_date").val(item.io_date); //입고일자
+							
+							}
+
+
+                            if (item.io_status == '1') { //배송완료 
+                                $("#chkDeli").addClass('clickDeli');
+                                $("#chkIcon").show();
                             }
-
-                        } else {
-
                         }
 
-
-                        if (item.io_status == '1') { //배송완료 
-                            $("#chkDeli").addClass('clickDeli');
-                            $("#chkIcon").show();
-                        }
                         if (item.p_num == null) { //2020-04-09
                             return true;
                         }
@@ -590,6 +722,9 @@
                             html += ' <input type="hidden"  name="io_type[]" value="' + item.io_type + '">';
                             // html += ' <input type="hidden"  name="io_status" value="' + item.io_status + '">'; //배송완료 여부
                             html += '   <div class="opWrap">';
+                            html += '     <div id="' + li_id + '"  class="delBtnWrap" >';
+                            html += '        <i class="far fa-trash-alt" style="margin: 0 auto; font-size: 20px; color: rgb(241, 121, 126);"></i>';
+                            html += '      </div>';
                             html += '       <div class="opLeft">';
 
                             if (item.p_name == null) { // 삭제된 상품일 경우 
@@ -627,8 +762,9 @@
                             html += '       </div>';
                             html += '     </div>';
                             // html+='<div class="delBtnWrap"><div id="1" class="delBtn" style=" border-radius: 15px; border: 1px solid rgb(241, 121, 126); color:#1f1f1f;">X</div></div>';
-                            html += '<div class="delBtnWrap"><div  id="' + li_id + '" class="delBtn">삭제</div></div>';
-                            html += '   </div>';
+                            // html += '<div class="delBtnWrap"><div  id="' + li_id + '" class="delBtn">삭제</div></div>';
+                            // html += '   </div>';
+                            html += '</div>   </div>';
                             html += '</li>';
 
                             if (item.io_type == '-1') { //출고
@@ -747,6 +883,9 @@
                         html += ' <input type="hidden"  name="p_idx[]" value="' + $(this).find('input[name="add_p_idx"]').val() + '">';
                         html += ' <input type="hidden"  name="iop_idx[]" value="0">';
                         html += '   <div class="opWrap">';
+                        html += '     <div id="' + li_id + '" class="delBtnWrap" >';
+                        html += '        <i class="far fa-trash-alt" style="margin: 0 auto; font-size: 20px; color: rgb(241, 121, 126);"></i>';
+                        html += '      </div>';
                         html += '       <div class="opLeft">';
                         html += '           <div class="opTitle"><span>' + $(this).find('.addLeft p').text() + '</span></div>';
                         html += '           <div class="opTitle priceTxt">';
@@ -776,8 +915,8 @@
                         html += '           <div id="add" class="cntBtn plus ">+</div>';
                         html += '       </div>';
                         html += '     </div>';
-                        html += '<div class="delBtnWrap"><div  id="' + li_id + '" class="delBtn">삭제</div></div>';
-                        html += '   </div>';
+                        //  html += '<div class="delBtnWrap"><div  id="' + li_id + '" class="delBtn">삭제</div></div>';
+                        html += '</div>   </div>';
 
                         html += '</li>';
 
@@ -916,7 +1055,9 @@
                 dateFormat: "yy-mm-dd",
                 firstDay: 0,
                 isRTL: false,
-                showMonthAfterYear: true,
+                showOtherMonths: true, //월 1일 이전, 월 말일 이후 빈칸에 이전달, 다음달 날짜 출력 여부
+                selectOtherMonths: true, //showOtherMonths 선택가능
+                showMonthAfterYear: true, //연도선택이 왼쪽에 위치 
                 yearSuffix: ""
             };
             $.datepicker.setDefaults($.datepicker.regional["ko"]);
@@ -927,6 +1068,13 @@
                 $(".ui-datepicker").hide().blur();
             };
         });
+
+        $("input[name=io_date]").change(function() {
+            //저장버튼 활성화
+            chkSave = 0;
+            $("#saveBtn").css("background", "rgb(241, 121, 126)");
+        });
+
         $('#io_date,#edate').datepicker({
             closeText: '취소',
             showButtonPanel: true,
