@@ -146,7 +146,9 @@
                 <!-- .outWrap -->
 
                 <!--입고상품-->
+               
                 <div class="outWrap">
+                    <div class="topLayer" ></div>
                     <div class="outHdWrap">
                         <div class="inHd">
                             <span>입고상품</span>
@@ -246,7 +248,8 @@
             $("#del_io span").text("");
             $(".textLogo a").text(st_name); //헤더에 지점명 삽입
         }
-        if (localStorage.getItem('store_idx') > 0) {
+        if (localStorage.getItem('store_idx') > 0) { //지점 로그인한 경우
+            $(".topLayer").css("display", "block");
             $("#delMemo").css("display", "none");
             $(".blank").css("display", "block");
 
