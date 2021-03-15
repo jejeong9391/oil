@@ -20,6 +20,7 @@ async function request(endpoint, query, data) {
         return resp
     } catch (e) {
         console.error('request error', e);
+        ////////// 에러로그 생성 - 사용자 alert띄우고, log db에 저장할 것 
     }
 }
 /*  } else {
