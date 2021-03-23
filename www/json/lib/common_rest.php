@@ -13,7 +13,10 @@ header("Pragma:no-cache");
 //echo $_SERVER['SERVER_PROTOCOL'];
 //ini_set("display_errors", "1");
 // mysql database 연결 
-$link = mysqli_connect('db.mesoft.kr', 'oil', 'mesoft1224', 'oil_manager'); 
+//$link = mysqli_connect('db.mesoft.kr', 'oil', 'mesoft1224', 'oil_manager');  // 2021-03-23 이전 사용하던 Maria db정보
+$link = mysqli_connect('db.mesoft.kr', 'oil', 'mesoft1224', 'oil_manager');   //  2021-03-23 arouraDB 마이그레이션 
+
+
 mysqli_set_charset($link,'utf8');
 
 /*
