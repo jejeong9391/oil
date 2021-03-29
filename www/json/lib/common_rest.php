@@ -58,15 +58,15 @@ if($flag || $flag!="")
 }
 //echo $method;
 
-if($method='GET'){ //2021-03-29 select 요청이면 read-Replica 사용 
-	$link = mysqli_connect('rds-read.mesoft.kr', 'oil', 'mesoft1224', 'oil_manager'); // aws 리드레플리카 연결된 서브도메인
-	mysqli_set_charset($link,'utf8');
+//2021-03-29 요청값(method)에 따라 db연결 인스턴스를 다르게하여 분산시킴 
+$db_route='';
+if($method='GET')$db_route ='rds-read.mesoft.kr'; //2021-03-29 select 요청이면 read-Replica 연결된 서브도메인 사용 
+else $db_route ='rds.mesoft.kr';
 
-}else{
+// DB connect 
+$link = mysqli_connect($db_route,'oil', 'mesoft1224', 'oil_manager'); 
+mysqli_set_charset($link,'utf8');
 
-	$link = mysqli_connect('db.mesoft.kr', 'oil', 'mesoft1224', 'oil_manager');   //  2021-03-23 arouraDB 마이그레이션 
-	mysqli_set_charset($link,'utf8');
-}
 
 //경로에서 key값 추출 
 $request = explode('/', trim($_SERVER['PATH_INFO'],'/')); 
