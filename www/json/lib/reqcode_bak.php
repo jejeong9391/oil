@@ -14,7 +14,6 @@ header("HTTP/1.1 200 OK");
 		"meta": {
 			
 			"msg": "'.$table_name.' list ",
-			"msg2": "'.$db_route.' ",
 			"rows": "'.mysqli_num_rows($result).'"';
 		//전체 데이터 개수필요한 경우 (샵리스트)
 		if($cnt_row){
@@ -90,7 +89,7 @@ header("HTTP/1.1 200 OK");
 		}';
 	*/
 	$array=array(
-		meta=>array(msg=>$table_name.' INSERT success', msg2=>$db_route),
+		meta=>array(msg=>$table_name.' INSERT success'),
 		data=>array(row=>mysqli_affected_rows($link))
 	);
 
@@ -101,7 +100,7 @@ header("HTTP/1.1 200 OK");
 	
 	//header("HTTP/1.1 204 OK");
 	$array=array(
-		meta=>array(msg=>$table_name.' UPDATE success', msg2=>$db_route),
+		meta=>array(msg=>$table_name.' UPDATE success'),
 		data=>array(row=>mysqli_affected_rows($link))
 	);
 
