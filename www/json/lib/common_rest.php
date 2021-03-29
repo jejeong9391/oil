@@ -14,10 +14,7 @@ header("Pragma:no-cache");
 //ini_set("display_errors", "1");
 // mysql database 연결 
 //$link = mysqli_connect('db.mesoft.kr', 'oil', 'mesoft1224', 'oil_manager');  // 2021-03-23 이전 사용하던 Maria db정보
-$link = mysqli_connect('db.mesoft.kr', 'oil', 'mesoft1224', 'oil_manager');   //  2021-03-23 arouraDB 마이그레이션 
 
-
-mysqli_set_charset($link,'utf8');
 
 /*
 //2020-01-15 conn테스트 
@@ -60,6 +57,16 @@ if($flag || $flag!="")
 	$method = strtoupper($flag); //get, post 
 }
 //echo $method;
+
+if($method='GET'){ //2021-03-29 select 요청이면 read-Replica 사용 
+	$link = mysqli_connect('rds-read.mesoft.kr', 'oil', 'mesoft1224', 'oil_manager'); // aws 리드레플리카 연결된 서브도메인
+	mysqli_set_charset($link,'utf8');
+
+}else{
+
+	$link = mysqli_connect('db.mesoft.kr', 'oil', 'mesoft1224', 'oil_manager');   //  2021-03-23 arouraDB 마이그레이션 
+	mysqli_set_charset($link,'utf8');
+}
 
 //경로에서 key값 추출 
 $request = explode('/', trim($_SERVER['PATH_INFO'],'/')); 
