@@ -13,10 +13,11 @@ header("Pragma:no-cache");
 //echo $_SERVER['SERVER_PROTOCOL'];
 //ini_set("display_errors", "1");
 // mysql database 연결 
-//$link = mysqli_connect('db.mesoft.kr', 'oil', 'mesoft1224', 'oil_manager');  // 2021-03-23 이전 사용하던 Maria db정보
+//$link = mysqli_connect('db.mesoft.kr', 'oil', 'mesoft1224', 'oil_manager');   // 2021-03-23 이전 사용하던 Maria db정보
+/*$link = mysqli_connect('rds.mesoft.kr', 'oil', 'mesoft1224', 'oil_manager');  //  2021-03-23 arouraDB 마이그레이션 
+mysqli_set_charset($link,'utf8');
 
 
-/*
 //2020-01-15 conn테스트 
 	if ($link->connect_error) {
 		die("Connection failed: " .$link->connect_error);
@@ -60,7 +61,7 @@ if($flag || $flag!="")
 
 //2021-03-29 요청값(method)에 따라 db연결 인스턴스를 다르게하여 분산시킴 
 $db_route='';
-if($method='GET')$db_route ='rds-read.mesoft.kr'; //2021-03-29 select 요청이면 read-Replica 연결된 서브도메인 사용 
+if($method=='GET')$db_route ='rds-read.mesoft.kr'; //2021-03-29 select 요청이면 read-Replica 연결된 서브도메인 사용 
 else $db_route ='rds.mesoft.kr';
 
 // DB connect 
