@@ -328,7 +328,8 @@
                 }
 
             });
-            /* 2020-08-31 수량 클릭시 클립보드 해결후 주석풀 것 // 각 태그에 readonly도 제거 
+            /* 2020-08-31 수량 클릭시 클립보드 해결후 주석풀 것 // 각 태그에 readonly도 제거 */
+            // 2020-10-17_SAI readonly 제거함. //2021-04-02 주석풀고 SAI 추가내용적용함)
             //수량 input 선택 시, 선택처리
             $(document).on("click", ".cntInput", function() {
                 $(this).select();
@@ -338,32 +339,38 @@
               // alert('ss');
               });
 			
-			//수량 미입력 시 alert
-			 $(document).on("blur", ".cntInput", function() {
+			//수량 미입력 시 alert  
+            $(document).on("blur", ".cntInput", function() {
                 if($(this).val()==''){
 					alertBoxFocus('수량을 입력해주세요',$(this));
+					$(this).val(1);//2020-10-17_SAI 경고창후 기본수량인 1로 자동 입력 
+					$(this).select();//2020-10-18_SAI 경고창후 기본수량을 전체선택된 상태로 표시
 					}
               });
-
             
             //수량 변경 시, amt저장 및 재계산 
             $(document).on("keyup", ".cntInput", function() {
               
-                var this_li = $(this).parents('li').attr('id');
-                var chg_amt = $(this).val();
-				
-               //   alert(chg_amt);
-                 if (this_li < 90) {
-                    $("#" + this_li).find('input[name="out_amt[]"]').val(chg_amt); // 출고
-                } else {
-                     $("#" + this_li).find('input[name="in_amt[]"]').val(chg_amt); //입고
-                }
-                  getTotal(); //합계재계산 
-                
-              });
-            */
-            //수량조절 
-            $(document).on("click", ".cntBtn", function() {
+              var this_li = $(this).parents('li').attr('id');
+              var chg_amt = $(this).val();
+              
+              if(Number($(this).val()>999)) // 2020-10-17_SAI 최대수량을 999개로 설정하고 999개가 넘으면 999로 변경 시킴
+              {
+                  alertBoxFocus('수량은 최대 999개까지 입력이 가능합니다',$(this));
+                  $(this).val('999');
+              }
+             //   alert(chg_amt);
+               if (this_li < 90) {
+                  $("#" + this_li).find('input[name="out_amt[]"]').val(chg_amt); // 출고
+              } else {
+                   $("#" + this_li).find('input[name="in_amt[]"]').val(chg_amt); //입고
+              }
+                getTotal(); //합계재계산 
+              
+            });
+            
+               //수량조절 
+               $(document).on("click", ".cntBtn", function() {
                 // $(".outProduct").on('click', function() {
                 var liIdx = $(this).parents('li').attr('id');
                 if (liIdx < 90) {
@@ -523,6 +530,7 @@
                 else amt--;
             }
 
+            /*2020-11-03_SAI 반품처리를 핸드폰으로도 해야한다면 아래 라인을 모두 주석처리하고 sum=부분을 주석해제하면 처리됨*/
             if (amt > 0) {
                 // alert(typeof(amt));
                 sum = amt * price;
@@ -534,14 +542,15 @@
                     amt = 0.5;
                     sum = 0.5;
                 }
-
-
                 /*  amt = 0;
                  sum = 0;
                  setTimeout(function() {
                                  msgToast('수량');
-                             }, 200);*/
+                             }, 200);
             }
+			sum = amt * price;
+			*/
+			}
             li.find('.cntInput').val(amt); //수량변경 
             if (pro == '-1') {
                 li.find('input[name="out_amt[]"]').val(amt);
@@ -782,7 +791,7 @@
                                 html += '    <div class="opRight">';
                                 html += '       <div class="cntWrap">';
                                 html += '           <div id="del" class="cntBtn minus">-</div>';
-                                html += '           <input type="number" class="cntInput" value="' + item.amount + '"  readonly>';
+                                html += '           <input type="number" class="cntInput" value="' + item.amount + '" >';
                                 html += '           <div id="add" class="cntBtn plus ">+</div>';
                                 html += '       </div>';
                                 html += '     </div>';
@@ -936,7 +945,7 @@
                         html += '    <div class="opRight">';
                         html += '       <div class="cntWrap">';
                         html += '           <div id="del" class="cntBtn minus">-</div>';
-                        html += '           <input type="number" class="cntInput" value="1" readonly >';
+                        html += '           <input type="number" class="cntInput" value="1"  >';
                         html += '           <div id="add" class="cntBtn plus ">+</div>';
                         html += '       </div>';
                         html += '     </div>';

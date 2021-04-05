@@ -1,9 +1,14 @@
+############## 수량 직접 변경가능 기능인 sai 주석 적용전 (2021-04-02) ############
 <!doctype html>
 <html>
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maxium-scale=1.0, minimun-scale=1.0, width=device-width">
+    <!--캐시삭제-->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Pragma" content="no-cache" />
     <title>신일푸드</title>
 
     <!-- jQuery -->
@@ -61,7 +66,7 @@
 
             <div class="indate dateWrap">
                 <span>입고일자 :&nbsp;&nbsp;</span>
-                <input type="hidden" name="before_ioDate" id="before_ioDate">
+                <input type="hidden" name="before_ioDate" id="before_ioDate" val="">
                 <!--기존입고일자-->
                 <input type="text" id="io_date" name="io_date" class="io_date" readonly>
                 <!-- <div class="dayWrap">
@@ -108,6 +113,31 @@
                         <input type="hidden" class="outCnt" value="0">
                         <!--   <li class="outProduct"></li>-->
                         <!--반복시작-->
+                        <li id="2222" class="outProduct">
+                            <!-- <div class="opWrap" style="    margin: 10px 1px;">
+                                  <div class="delBtnWrap" >
+                                    <i class="far fa-trash-alt" style="margin: 0 auto; font-size: 20px; color: rgb(241, 121, 126);"></i>
+                                </div>
+                                <div class="opLeft" style="padding-left:10px;    width: 68%; ">
+                                    <div class="opTitle"><span>두마리무쇠치킨 크리스피</span></div>
+                                    <div class="opTitle priceTxt">
+                                        <input type="hidden" name="amt_price[]" value="' + proPrice + '">
+                                        <input type="hidden" name="out_amt[]" value="' + item.amount + '">
+                                        <input type="hidden" name="out_total[]" value="' + parseInt(proPrice) + '">
+                                        <input type="hidden" name="in_amt[]" value="0">
+                                        <input type="hidden" name="in_total[]" value="0">
+                                        <p>50,000</p>
+                                    </div>
+                                </div>
+                                <div class="opRight">
+                                    <div class="cntWrap">
+                                        <div id="del" class="cntBtn minus">-</div>
+                                        <input type="text" class="cntInput" value="3" readonly>
+                                        <div id="add" class="cntBtn plus ">+</div>
+                                    </div>
+                                </div>
+                            </div>-->
+                        </li>
                         <!--반복끝-->
                     </ul>
                     <div id="outTotal" class="totalWrap">
@@ -121,7 +151,9 @@
                 <!-- .outWrap -->
 
                 <!--입고상품-->
+               
                 <div class="outWrap">
+                    <div class="topLayer" ></div>
                     <div class="outHdWrap">
                         <div class="inHd">
                             <span>입고상품</span>
@@ -206,6 +238,8 @@
         var io_idx = getParamByName('io_idx');
         var st_idx = getParamByName('st_idx');
         var st_name = getParamByName('st_name');
+
+      
         if (!st_idx) {
             alertBox('지점정보가 없습니다.');
             history.back();
@@ -221,7 +255,8 @@
             $("#del_io span").text("");
             $(".textLogo a").text(st_name); //헤더에 지점명 삽입
         }
-        if (localStorage.getItem('store_idx') > 0) {
+        if (localStorage.getItem('store_idx') > 0) { //지점 로그인한 경우
+            $(".topLayer").css("display", "block");
             $("#delMemo").css("display", "none");
             $(".blank").css("display", "block");
 
@@ -229,9 +264,6 @@
 
         $(function() {
             getOrdList(io_idx, st_idx);
-
-            // $('.cntInput').attr('readOnly', true);
-
 
             //통화기능 
             $(".btnMenu").on('click', function() {
@@ -277,7 +309,7 @@
             });*/
 
             //상품삭제 처리 //동적으로 생긴 ui 일경우 document사용해야함. 
-            $(document).on("click", ".delBtn", function() {
+            $(document).on("click", ".delBtnWrap", function() {
                 //$(".delBtn").on('click', function() { 작동X
 
                 var thisId = $(this).attr("id");
@@ -297,8 +329,40 @@
                 }
 
             });
+            /* 2020-08-31 수량 클릭시 클립보드 해결후 주석풀 것 // 각 태그에 readonly도 제거 
+            //수량 input 선택 시, 선택처리
+            $(document).on("click", ".cntInput", function() {
+                $(this).select();
+              });
 
+			  $(document).on("dbclick", ".cntInput", function() {
+              // alert('ss');
+              });
+			
+			//수량 미입력 시 alert
+			 $(document).on("blur", ".cntInput", function() {
+                if($(this).val()==''){
+					alertBoxFocus('수량을 입력해주세요',$(this));
+					}
+              });
 
+            
+            //수량 변경 시, amt저장 및 재계산 
+            $(document).on("keyup", ".cntInput", function() {
+              
+                var this_li = $(this).parents('li').attr('id');
+                var chg_amt = $(this).val();
+				
+               //   alert(chg_amt);
+                 if (this_li < 90) {
+                    $("#" + this_li).find('input[name="out_amt[]"]').val(chg_amt); // 출고
+                } else {
+                     $("#" + this_li).find('input[name="in_amt[]"]').val(chg_amt); //입고
+                }
+                  getTotal(); //합계재계산 
+                
+              });
+            */
             //수량조절 
             $(document).on("click", ".cntBtn", function() {
                 // $(".outProduct").on('click', function() {
@@ -310,6 +374,10 @@
                 }
 
             });
+            
+         
+            
+            
             //배송메모 클릭 시, 화면 하단으로 스크롤 이동 
             $(".ordMemo").on("click", function() {
                 $('html').animate({
@@ -337,8 +405,9 @@
                     }
                 }
             });
+            
 
-            //저장 
+			//저장 
             $("#saveBtn").on("click", function() {
 
                 $(this).css("background", "#efefef");
@@ -358,8 +427,12 @@
                             return false;
                         }
 
-                    } //2020-05-11 기사 마감
-                    else {
+						if($('input[name="io_status"]').val() == '1'){
+							alertBox("배송완료처리된 전표는 수정할 수 없습니다.");
+							return false;
+						}
+
+                    }else {//2020-05-11 기사 마감
                         var io_date = $("#io_date").val(); //입고일자 
                         var before_ioDate = $("#before_ioDate").val(); //수정전, 기존입고일자
 
@@ -382,17 +455,17 @@
 							chkSave = 1;
                             return false;
                         }
-
-                        //저장처리 
+                    }
+                     //저장처리 
                         if (io_idx) { //수정
                             insertOrder("PUT", io_idx);
                         } else { // insert
                             //console.log($("input[name='out_total[]']").val());
                             insertOrder("POST", '');
                         }
-                    }
                 }
             }); /*save 끝*/
+
 
         }); /*$(function()끝*/
         function chk_deadline(io_date) {
@@ -535,7 +608,7 @@
                 "center_idx": localStorage.getItem('center_idx'),
                 "st_idx": st_idx
 
-            }).then(function(resp) {
+            }).then(function(resp) { 
                 var rowsNum = resp.data.meta.rows;
 
                 if (rowsNum > 0) {
@@ -549,6 +622,7 @@
 
                     headList.forEach(function(item) {
                         var html = "";
+                        //################ inout 정보 시작 ################
                         if (!isFirst) { //inout 정보는 한번만 뿌리도록 구분값 //전역에 false하고 foreach한번돌고나면 true니까 반복하지않음.
                             isFirst = true;
 
@@ -557,7 +631,7 @@
                             $(".ordMemo").val(item.remark); // 매장 전화번호
                             if (item.io_idx) $("input[name='io_status']").val(item.io_status); // 전표있는경우, 배송여부 
 
-                            if (item.visit_day != '') { //입고요일 구하기
+                            if (item.visit_day != null) { //입고요일 구하기 // 입고요일 미정이면 9|9|9으로 저장됨. null== 매장정보 없는 경우 
                                 //입고요일배열
                                 var Arr = item.visit_day.split('|'); // |0|9|2|9|...이렇게 시작해서 split한 Arr[0]은 빈값임.
                                 Arr.shift(); //Arr[0] 요소는 빈값이므로 제거 
@@ -604,120 +678,136 @@
                                         $("#io_date").val(makeDate(date));
                                     }
                                 }
-                            }
+                            }else{ // 전표정보있는데 매장정보가 없는 경우 item.visit_day != null임 
+								//입고일자는 입력
+								 $("#before_ioDate").val(item.io_date); //기존 입고일자 저장 
+                                 $("#io_date").val(item.io_date); //입고일자
+							
+							}
+
+
                             if (item.io_status == '1') { //배송완료 
                                 $("#chkDeli").addClass('clickDeli');
                                 $("#chkIcon").show();
                             }
                         }
+                        //################ inout 정보 끝 ################
 
                         if (item.p_num == null) { //2020-04-09
                             return true;
                         }
                         if (item.p_idx != null) { // 상품이 있는경우 // 없으면 전표정보만 출력 
 
-                            //정수일때 소수점 제거
-                            var amt = item.amount.split('.');
-                            if (amt[1] < 1) item.amount = amt[0]; // 정수일 경우 소수점이하 출력되지않도록 함. 
+                            //2021-03-11 프랜차이즈에 기본설정한 상품이 있더라도 입고(폐유)상품은 기본표시하지않도록 변경 (신일유통 요청사항-카톡)
+                            if((item.io_idx==null)&&( localStorage.getItem('store_idx')>0)&&(item.io_type=='1')){
+                                // 전표 등록 && 지점 로그인 && 입고 상품은 표시하지않도록 함.
+                            }else{
+                                //정수일때 소수점 제거
+                                var amt = item.amount.split('.');
+                                if (amt[1] < 1) item.amount = amt[0]; // 정수일 경우 소수점이하 출력되지않도록 함. 
 
-                            // 입출고에 따라 id_num ai로 부여 
-                            if (item.io_type == '-1') {
-                                var li_id = Number($(".outCnt").val()) + 1;
-                            } else {
-                                var li_id = Number($(".inCnt").val()) + 1;
+                                // 입출고에 따라 id_num ai로 부여 
+                                if (item.io_type == '-1') {
+                                    var li_id = Number($(".outCnt").val()) + 1;
+                                } else {
+                                    var li_id = Number($(".inCnt").val()) + 1;
+                                }
+
+
+                                //전표 유무에 따라 단가 컬럼명 다르게 적용 
+                                // var proPrice='';
+                                if (item.iop_idx) {
+                                    var proPrice = item.amt_price; //io_pro의 판매단가
+                                    var iop_idx = item.iop_idx;
+                                } else {
+                                    var proPrice = item.p_amt_out; // product의 출고가 
+                                    var iop_idx = '';
+                                }
+                                //규격없는 상품은 상품명만 출력
+                                if (item.p_stand) {
+                                    var p_stand = " (" + item.p_stand + ")";
+                                } else {
+                                    var p_stand = '';
+                                }
+
+
+                                /*마지막 요소 ID에 1 추가하여 id 생성 
+                                //alert( '마지막 li id : '+ $('#setOutList > li').last().attr('id'));
+                                var li_id = Number($('#setOutList > li').last().attr('id')) + 1;
+                                if (isNaN(li_id)) li_id = 0;
+                                if (li_id < 0) li_id = 0;
+                                */
+
+
+                                //숫자 콤마처리 
+                                //    html += '<input type="hidden" id="' + li_id + '"  name="del_idx[]" value="2">';
+                                html += '<li id="' + li_id + '" class="outProduct">';
+                                // html += ' <input type="hidden" name="del_idx[]">';
+                                html += ' <input type="hidden"  name="p_idx[]" value="' + item.p_idx + '">';
+                                html += ' <input type="hidden"  name="iop_idx[]" value="' + iop_idx + '">';
+                                html += ' <input type="hidden"  name="io_type[]" value="' + item.io_type + '">';
+                                // html += ' <input type="hidden"  name="io_status" value="' + item.io_status + '">'; //배송완료 여부
+                                html += '   <div class="opWrap">';
+                                html += '     <div id="' + li_id + '"  class="delBtnWrap" >';
+                                html += '        <i class="far fa-trash-alt" style="margin: 0 auto; font-size: 20px; color: rgb(241, 121, 126);"></i>';
+                                html += '      </div>';
+                                html += '       <div class="opLeft">';
+
+                                if (item.p_name == null) { // 삭제된 상품일 경우 
+                                    html += '           <div class="opTitle"><span>삭제된 상품</span></div>';
+                                } else {
+                                    html += '           <div class="opTitle"><span>' + item.p_name + p_stand + '</span></div>';
+                                }
+
+                                html += '           <div class="opTitle priceTxt">';
+
+                                //전표가 있을 경우, 판매단가
+                                html += '               <input type="hidden"  name="amt_price[]" value="' + proPrice + '">'; //필요한건가? js에서 값 가져다쓸때 쓰나?
+
+                                //입출고 구분에 따라 total 다르게 입력 
+                                if (item.io_type == '-1') {
+                                    html += '               <input type="hidden"  name="out_amt[]" value="' + item.amount + '">';
+                                    html += '               <input type="hidden"  name="out_total[]" value="' + parseInt(proPrice) + '">';
+                                    html += '               <input type="hidden"  name="in_amt[]" value="0">';
+                                    html += '               <input type="hidden"  name="in_total[]" value="0">';
+                                } else {
+                                    html += '               <input type="hidden"  name="out_amt[]" value="0">';
+                                    html += '               <input type="hidden"  name="out_total[]" value="0">';
+                                    html += '               <input type="hidden"  name="in_amt[]" value="' + item.amount + '">';
+                                    html += '               <input type="hidden"  name="in_total[]" value="' + parseInt(proPrice) + '">';
+                                }
+
+                                html += '               <p>' + Number(proPrice).toLocaleString('en') + '</p>';
+                                html += '           </div>';
+                                html += '       </div>';
+                                html += '    <div class="opRight">';
+                                html += '       <div class="cntWrap">';
+                                html += '           <div id="del" class="cntBtn minus">-</div>';
+                                html += '           <input type="number" class="cntInput" value="' + item.amount + '"  readonly>';
+                                html += '           <div id="add" class="cntBtn plus ">+</div>';
+                                html += '       </div>';
+                                html += '     </div>';
+                                // html+='<div class="delBtnWrap"><div id="1" class="delBtn" style=" border-radius: 15px; border: 1px solid rgb(241, 121, 126); color:#1f1f1f;">X</div></div>';
+                                // html += '<div class="delBtnWrap"><div  id="' + li_id + '" class="delBtn">삭제</div></div>';
+                                // html += '   </div>';
+                                html += '</div>   </div>';
+                                html += '</li>';
+
+                                if (item.io_type == '-1') { //출고
+
+                                    $("#setOutList").append(html);
+                                    $(".outCnt").val(li_id);
+                                    $(".outHd span:nth-child(2)").text("(" + $('#setOutList>li').length + ")"); //추가한 상품개수 
+                                    $("#outTotal span:nth-child(2)").text(item.amt_total);
+
+
+                                } else {
+                                    $("#setInList").append(html);
+                                    $(".inCnt").val(li_id);
+                                    $(".inHd span:nth-child(2)").text("(" + $('#setInList>li').length + ")"); //추가한 상품개수 
+                                    $("#inTotal span:nth-child(2)").text(item.amt_total);
+                                } //입고
                             }
-
-
-                            //전표 유무에 따라 단가 컬럼명 다르게 적용 
-                            // var proPrice='';
-                            if (item.iop_idx) {
-                                var proPrice = item.amt_price; //io_pro의 판매단가
-                                var iop_idx = item.iop_idx;
-                            } else {
-                                var proPrice = item.p_amt_out; // product의 출고가 
-                                var iop_idx = '';
-                            }
-                            //규격없는 상품은 상품명만 출력
-                            if (item.p_stand) {
-                                var p_stand = " (" + item.p_stand + ")";
-                            } else {
-                                var p_stand = '';
-                            }
-
-
-                            /*마지막 요소 ID에 1 추가하여 id 생성 
-                             //alert( '마지막 li id : '+ $('#setOutList > li').last().attr('id'));
-                            var li_id = Number($('#setOutList > li').last().attr('id')) + 1;
-                            if (isNaN(li_id)) li_id = 0;
-                            if (li_id < 0) li_id = 0;
-                            */
-
-
-                            //숫자 콤마처리 
-                            //    html += '<input type="hidden" id="' + li_id + '"  name="del_idx[]" value="2">';
-                            html += '<li id="' + li_id + '" class="outProduct">';
-                            // html += ' <input type="hidden" name="del_idx[]">';
-                            html += ' <input type="hidden"  name="p_idx[]" value="' + item.p_idx + '">';
-                            html += ' <input type="hidden"  name="iop_idx[]" value="' + iop_idx + '">';
-                            html += ' <input type="hidden"  name="io_type[]" value="' + item.io_type + '">';
-                            // html += ' <input type="hidden"  name="io_status" value="' + item.io_status + '">'; //배송완료 여부
-                            html += '   <div class="opWrap">';
-                            html += '       <div class="opLeft">';
-
-                            if (item.p_name == null) { // 삭제된 상품일 경우 
-                                html += '           <div class="opTitle"><span>삭제된 상품</span></div>';
-                            } else {
-                                html += '           <div class="opTitle"><span>' + item.p_name + p_stand + '</span></div>';
-                            }
-
-                            html += '           <div class="opTitle priceTxt">';
-
-                            //전표가 있을 경우, 판매단가
-                            html += '               <input type="hidden"  name="amt_price[]" value="' + proPrice + '">'; //필요한건가? js에서 값 가져다쓸때 쓰나?
-
-                            //입출고 구분에 따라 total 다르게 입력 
-                            if (item.io_type == '-1') {
-                                html += '               <input type="hidden"  name="out_amt[]" value="' + item.amount + '">';
-                                html += '               <input type="hidden"  name="out_total[]" value="' + parseInt(proPrice) + '">';
-                                html += '               <input type="hidden"  name="in_amt[]" value="0">';
-                                html += '               <input type="hidden"  name="in_total[]" value="0">';
-                            } else {
-                                html += '               <input type="hidden"  name="out_amt[]" value="0">';
-                                html += '               <input type="hidden"  name="out_total[]" value="0">';
-                                html += '               <input type="hidden"  name="in_amt[]" value="' + item.amount + '">';
-                                html += '               <input type="hidden"  name="in_total[]" value="' + parseInt(proPrice) + '">';
-                            }
-
-                            html += '               <p>' + Number(proPrice).toLocaleString('en') + '</p>';
-                            html += '           </div>';
-                            html += '       </div>';
-                            html += '    <div class="opRight">';
-                            html += '       <div class="cntWrap">';
-                            html += '           <div id="del" class="cntBtn minus">-</div>';
-                            html += '           <input type="text" class="cntInput" value="' + item.amount + '" readonly>';
-                            html += '           <div id="add" class="cntBtn plus ">+</div>';
-                            html += '       </div>';
-                            html += '     </div>';
-                            // html+='<div class="delBtnWrap"><div id="1" class="delBtn" style=" border-radius: 15px; border: 1px solid rgb(241, 121, 126); color:#1f1f1f;">X</div></div>';
-                            html += '<div class="delBtnWrap"><div  id="' + li_id + '" class="delBtn">삭제</div></div>';
-                            html += '   </div>';
-                            html += '</li>';
-
-                            if (item.io_type == '-1') { //출고
-
-                                $("#setOutList").append(html);
-                                $(".outCnt").val(li_id);
-                                $(".outHd span:nth-child(2)").text("(" + $('#setOutList>li').length + ")"); //추가한 상품개수 
-                                $("#outTotal span:nth-child(2)").text(item.amt_total);
-
-
-                            } else {
-                                $("#setInList").append(html);
-                                $(".inCnt").val(li_id);
-                                $(".inHd span:nth-child(2)").text("(" + $('#setInList>li').length + ")"); //추가한 상품개수 
-                                $("#inTotal span:nth-child(2)").text(item.amt_total);
-                            } //입고
-
                         } else {
                             if (item.io_idx) { //전표는 있는데, 주문상품이 없는경우
                                 setTimeout(function() {
@@ -727,7 +817,7 @@
 
 
                         } //상품 있는경우 
-                    }); //foreach rowsNum>0 끝 ///\
+                    }); //foreach rowsNum>0 끝 ///
 
                     // toal계산 
                     getTotal();
@@ -819,6 +909,9 @@
                         html += ' <input type="hidden"  name="p_idx[]" value="' + $(this).find('input[name="add_p_idx"]').val() + '">';
                         html += ' <input type="hidden"  name="iop_idx[]" value="0">';
                         html += '   <div class="opWrap">';
+                        html += '     <div id="' + li_id + '" class="delBtnWrap" >';
+                        html += '        <i class="far fa-trash-alt" style="margin: 0 auto; font-size: 20px; color: rgb(241, 121, 126);"></i>';
+                        html += '      </div>';
                         html += '       <div class="opLeft">';
                         html += '           <div class="opTitle"><span>' + $(this).find('.addLeft p').text() + '</span></div>';
                         html += '           <div class="opTitle priceTxt">';
@@ -844,12 +937,12 @@
                         html += '    <div class="opRight">';
                         html += '       <div class="cntWrap">';
                         html += '           <div id="del" class="cntBtn minus">-</div>';
-                        html += '           <input type="text" class="cntInput" value="1" readonly>';
+                        html += '           <input type="number" class="cntInput" value="1" readonly >';
                         html += '           <div id="add" class="cntBtn plus ">+</div>';
                         html += '       </div>';
                         html += '     </div>';
-                        html += '<div class="delBtnWrap"><div  id="' + li_id + '" class="delBtn">삭제</div></div>';
-                        html += '   </div>';
+                        //  html += '<div class="delBtnWrap"><div  id="' + li_id + '" class="delBtn">삭제</div></div>';
+                        html += '</div>   </div>';
 
                         html += '</li>';
 
