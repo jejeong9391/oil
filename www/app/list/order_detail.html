@@ -345,7 +345,7 @@
             $(document).on("blur", ".cntInput", function() {
                 if($(this).val()==''){
 					alertBoxFocus('수량을 입력해주세요',$(this));
-                    $(this).val(1);//2020-10-17_SAI 경고창후 기본수량인 1로 자동 입력 -- 2021-04-05 자동입력될 때, amt 계산되지않음. 확인 후 수정해야함.
+					$(this).val(1);//2020-10-17_SAI 경고창후 기본수량인 1로 자동 입력 -- 2021-04-05 자동입력될 때, amt 계산되지않음. 확인 후 수정해야함.
 					$(this).select();//2020-10-18_SAI 경고창후 기본수량을 전체선택된 상태로 표시
 					}
               });
@@ -445,7 +445,9 @@
                         var before_ioDate = $("#before_ioDate").val(); //수정전, 기존입고일자
 
                         var chk_result = chk_deadline(io_date);
+						console.log('chk: '+chk_result+ '|  io_date: '+io_date);
                         if (chk_result == true) {
+							
                             //저장처리   
                             if (before_ioDate != '') {
                                 if (before_ioDate == io_date) {} else {
@@ -479,36 +481,43 @@
         function chk_deadline(io_date) {
 
             var deli_deadDate = $(".deli_deadDate").val(); //기사 마감설정값 
+			//alert(deli_deadDate);
             // var deli_deadDate = '5';
 
+			// -1 : 마감 미사용
+			if(deli_deadDate!='-1'){ // 마감 설정값이 있는 경우 
 
-            //1. 입고일자 날짜형태로 변경 
-            var io_dateArr = io_date.split('-');
-            var yy = io_dateArr[0];
-            var mm = Number(io_dateArr[1]) - 1; //날짜 변환시 +1로 변환하므로 -해줘야함 
-            var dd = io_dateArr[2];
+				   //1. 입고일자 날짜형태로 변경 
+						var io_dateArr = io_date.split('-');
+						var yy = io_dateArr[0];
+						var mm = Number(io_dateArr[1]) - 1; //날짜 변환시 +1로 변환하므로 -해줘야함 
+						var dd = io_dateArr[2];
 
-            var cmpr_ioDate = new Date(yy, mm, dd); //입고일변환
-            var endMonth = new Date(yy, mm + 1, 0); //입고일자의 월말 
-            var d = new Date();
-            //    console.log(endMonth + "===== 입고일 기준 마감일과 오늘을 비교 ==========" + cmpr_ioDate);
+						var cmpr_ioDate = new Date(yy, mm, dd); //입고일변환
+						var endMonth = new Date(yy, mm + 1, 0); //입고일자의 월말 
+						var d = new Date();
+						//    console.log(endMonth + "===== 입고일 기준 마감일과 오늘을 비교 ==========" + cmpr_ioDate);
 
-            /* 마감날짜 구하기
-            해당월의 마지막 날을 계산후 값만큼 Addday처리함
-            30일만 따로 처리 -마지막일자에서 한달 더하고 하루를 빼*/
+						/* 마감날짜 구하기
+						해당월의 마지막 날을 계산후 값만큼 Addday처리함
+						30일만 따로 처리 -마지막일자에서 한달 더하고 하루를 빼*/
 
-            if (deli_deadDate == '30') { //다음달 말일구하기 
-                endMonth.setMonth(endMonth.getMonth() + 2).setDate(0);
-                //날짜객체에서 1월==0임 따라서 해당 달을 구하려면 +1해야함. 다음달이니 +2
+						if (deli_deadDate == '30') { //다음달 말일구하기 
+							endMonth.setMonth(endMonth.getMonth() + 2).setDate(0);
+							//날짜객체에서 1월==0임 따라서 해당 달을 구하려면 +1해야함. 다음달이니 +2
 
-            } else {
-                endMonth.setDate(endMonth.getDate() + Number(deli_deadDate));
-            }
+						} else {
+							endMonth.setDate(endMonth.getDate() + Number(deli_deadDate));
+						}
+				
+					console.log(endMonth.getDate() +'</br>'+ d.getDate());
+					console.log("입고일 : " + cmpr_ioDate + "  || 마감일 : " + endMonth + "  ||  오늘 : " + d);
 
-            if (endMonth < d) { //정산일 5/5 < 현재 5/25  --- 수정불가 
-                console.log("입고일 : " + cmpr_ioDate + "  || 마감일 : " + endMonth + "  ||  오늘 : " + d);
-                return false;
-            }
+						if (endMonth.getDate() < d.getDate()) { //정산일 5/5 < 현재 5/25  --- 수정불가 
+							console.log("입고일 : " + cmpr_ioDate + "  || 마감일 : " + endMonth + "  ||  오늘 : " + d);
+							return false;
+						}
+			}
             return true;
         }
 
@@ -1054,11 +1063,14 @@
                     } else if (insertNum > 0) {
                         msgToast('저장되었습니다.');
                     }
-
+//alert(localStorage.getItem('rider_idx'));
+if(localStorage.getItem('rider_idx')!='224'){
 
                     setTimeout(function() {
                         location.href = "order_list.html";
                     }, 1500);
+}
+
                 } else {
                     chkSave = 0;
                     alertBox('저장되지 않았습니다. 관리자에게 문의하세요');
