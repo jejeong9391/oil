@@ -59,10 +59,13 @@ if($flag || $flag!="")
 }
 //echo $method;
 
-//2021-03-29 요청값(method)에 따라 db연결 인스턴스를 다르게하여 분산시킴 
+/*//2021-03-29 요청값(method)에 따라 db연결 인스턴스를 다르게하여 분산시킴 -- 
 $db_route='';
 if($method=='GET')$db_route ='rds-read.mesoft.kr'; //2021-03-29 select 요청이면 read-Replica 연결된 서브도메인 사용 
 else $db_route ='rds.mesoft.kr';
+*/
+//2021-07 요금문제로 다시 write 인스턴스만 사용하는 것으로 변경
+$db_route ='rds.mesoft.kr';
 
 // DB connect 
 $link = mysqli_connect($db_route,'oil', 'mesoft1224', 'oil_manager'); 
