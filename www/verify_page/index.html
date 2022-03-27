@@ -1,0 +1,201 @@
+<!--
+    ########### 2022-03-27 작업완료 후 -> 코드정리 ->  oil/root 경로에 업로드 -> git push 또는 이슈로 알릴 것 
+  메일에서 get으로 키값 전달
+  -> url에서 key값 떼서 text으로 표시 (1xxxxxxx24 ..텍스트 대체)
+  -> 다 입력하면 key:value값 post으로 result페이지에 전달
+  ############
+  
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>MeSoft Verify Page</title>
+</head>
+
+<body>
+    <div class="left_logo">
+        <img src="ebay.PNG" class="top_logo" alt="logo" />
+    </div>
+    <div class="container">
+        <div class="top_title">
+            <h1>Verify it's you</h1>
+            <p>
+                We sent a text with a security code to
+                <span>1xxxxxxx24.</span> It may take a moment to arrive.
+            </p>
+        </div>
+        <div class="auth_wrap">
+            <input type="tel" class="auth_input" maxlength="1" />
+            <input type="tel" class="auth_input" maxlength="1" />
+            <input type="tel" class="auth_input" maxlength="1" />
+            <input type="tel" class="auth_input" maxlength="1" />
+            <input type="tel" class="auth_input" maxlength="1" />
+        </div>
+
+        <div class="bottom_title">
+            <input type="button" class="btn resend_btn" value="Resend code" />
+            <input type="button" class="btn verify_btn" value="Verify" />
+        </div>
+        <div class="p_wrap">
+            <!-- 사용자 나이가 많아 인증시간 카운트 필요X  
+        <p class="p1">
+          You can resend the security code in <span></span> seconds
+        </p> -->
+            <p class="p2"><a href="">Other instant verification options</a></p>
+            <p class="p3">
+                For further assistance accessing your account,
+                <a href="">please contact us.</a>
+            </p>
+        </div>
+    </div>
+    <footer>
+        <p>
+            Copyright Â© 2010-2022 Mesoft. All Rights Reserved. User Agreement,
+            Privacy, Cookies and AdChoice
+        </p>
+    </footer>
+</body>
+<style></style>
+
+</html>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+<script>
+$(function() {
+    $(".auth_input").on({
+        keyup: function() {
+            // 숫자만 입력
+            $(this).val(
+                $(this)
+                .val()
+                .replace(/[^0-9]/g, "")
+            );
+            //입력되면 다음input으로 커서옮김
+            if ($(this).val() != "") {
+                if ($(this).index() == 4) {
+                    $(".verify_btn")
+                        .focus()
+                        .css({
+                            "background-color": "#3665f3",
+                            color: "#fff"
+                        });
+                } else {
+                    $(this).next().focus();
+                }
+            }
+        },
+        focus: function() {
+            $(this).css({
+                "border-color": "blue",
+                "background-color": "#fff"
+            });
+        },
+        blur: function() {
+            $(".auth_input").css({
+                "border-color": "#767676",
+                "background-color": "rgba(0, 0, 0, 0.05)",
+            });
+        },
+    });
+
+    //전송버튼
+    $(".verify_btn").on({
+        focus: function() {
+            $(this).css({
+                "background-color": "#3665f3",
+                color: "#fff"
+            });
+        },
+        blur: function() {
+            $(this).css({
+                "background-color": "var(--button-primary-disabled-background-color, #c7c7c7)",
+                color: "var(--button-primary-disabled-foreground-color, #fff)",
+            });
+        },
+        click: function() {
+            var isRight = true;
+
+            if (SetTime < 1) {
+                alert_timeOut();
+            } else {
+                $(".auth_wrap")
+                    .find("input[type=tel]")
+                    .each(function(index, item) {
+                        // 아무값없이 띄어쓰기만 있을 때도 빈 값으로 체크되도록 trim() 함수 호출
+                        if ($(this).val().trim() == "") {
+                            var input_index = $(this).index() + 1;
+                            alert(input_index + "번째 숫자를 입력하세요.");
+                            $(this).focus();
+                            isRight = false;
+                            return false;
+                        }
+                    });
+
+                if (isRight) alert("전송");
+            }
+        },
+    });
+
+    $(".resend_btn").on({
+        focus: function() {
+            $(this).css({
+                "border-color": "#323232",
+                color: "#323232"
+            });
+        },
+        blur: function() {
+            $(this).css({
+                "border-color": "var(--button-secondary-disabled-background-color, #ccc)",
+                color: "var(--button-secondary-disabled-foreground-color, #c7c7c7)",
+            });
+        },
+        click: function() {
+            alert("코드 재전송");
+            $(".auth_input").first().focus();
+        },
+    });
+});
+/*
+##### 시간초과 되면 이전 코드 폐기처리 (db값을 삭제처리하던지) 
+ 재전송 클릭하면 다시 타이머 체크 해야함.  
+ 남은시간이 0이면 전송처리되지않음. --> 재전송 버튼 활성화 함수처리 
+#####
+
+
+*/
+</script>
+<!--
+<script>
+  var SetTime = 10; // 최초 설정 시간(기본 : 초)
+  $(".p1 span").text(SetTime);
+  function msg_time() {
+    // 1초씩 카운트
+    m = Math.floor(SetTime / 60) + "분 " + (SetTime % 60) + "초"; // 남은 시간 계산
+    var msg = m;
+    $("#timer").text(msg); // div 영역에 보여줌
+    SetTime--; // 1초씩 감소
+    $(".p1 span").text(SetTime);
+    if (SetTime < 1) {
+      // 시간종료
+      clearInterval(tid); // 타이머 해제
+      alert_timeOut();
+    }
+  }
+  window.onload = function TimerStart() {
+    tid = setInterval("msg_time()", 1000);
+  };
+
+  function alert_timeOut() {
+    alert("인증시간이 초과되었습니다. 인증코드를 재전송해주세요.");
+    $(".resend_btn").focus();
+  }
+</script>
+-->

@@ -1,0 +1,141 @@
+/* 크롬 input 테두리 강조효과 제거 */
+*,
+*:focus,
+*:hover {
+  outline: none;
+}
+
+* {
+  font-family: Arial, Helvetica, sans-serif;
+}
+.top_logo {
+  width: 125px;
+  height: auto;
+}
+p {
+  line-height: 1rem;
+  font-size: 0.9rem;
+}
+p > span {
+  font-weight: 600;
+}
+.auth_wrap {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.auth_input {
+  width: 40px;
+  height: 40px;
+  border: solid 1px #767676;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+  padding: 5px;
+  margin-bottom: 10px;
+  color: #111820;
+  letter-spacing: normal;
+  margin: 5.5px;
+  border-radius: 8px;
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
+  font-weight: 700;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  text-align: center;
+
+  padding: 0 !important;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+@media only screen and (max-width: 319px) .auth_input {
+  width: 40px;
+  height: 40px;
+}
+body {
+  min-width: 300px;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+.left_logo {
+  margin: 10px;
+}
+.container {
+  max-width: 458px !important;
+  height: 50%;
+  margin: 0 auto;
+  /* border: 1px solid black;*/
+}
+.top_title h1 {
+  font-weight: 700;
+}
+.top_title h1,
+.top_title p {
+  text-align: center;
+  width: 100%;
+  margin: 2rem auto;
+  margin-bottom: 1rem;
+}
+
+.bottom_title {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  padding: 30px 0;
+  padding-bottom: 10px;
+}
+
+.btn {
+  width: 45%;
+  height: 40px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  text-align: center;
+  padding: 10px;
+  border-radius: 30px;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  font-weight: 700;
+}
+.resend_btn {
+  min-width: 160px;
+  background-color: var(--button-secondary-disabled-background-color, #fff);
+  color: var(--button-secondary-disabled-foreground-color, #c7c7c7);
+}
+.verify_btn {
+  min-width: 160px;
+  background-color: var(--button-primary-disabled-background-color, #c7c7c7);
+  color: var(--button-primary-disabled-foreground-color, #fff);
+}
+
+/* 숫자도 안채웠는데 호버할 필요가 없음 
+.verify_btn:hover {
+  background-color: #3665f3;
+  color: #fff;
+}*/
+
+.p_wrap {
+  text-align: center;
+  font-size: small;
+}
+.p1 {
+  color: #767676;
+}
+
+footer {
+  width: 100%;
+
+  border-top: #767676 solid 1px;
+  position: absolute;
+  bottom: 0;
+}
+footer p {
+  margin: 0;
+  padding: 30px 0;
+  font-size: 0.4rem;
+}
